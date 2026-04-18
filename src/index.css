@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter", sans-serif;
+  
+  --color-brand: #05070A;
+  --color-accent: #3B82F6;
+  --color-surface: #05070A;
+  --color-text-dim: #94A3B8;
+  --color-glass: rgba(15, 20, 28, 0.7);
+  --color-border-dim: rgba(255, 255, 255, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-brand text-white font-sans antialiased selection:bg-accent/30 selection:text-white;
+  }
+}
+
+.glass-nav {
+  @apply sticky top-0 z-50 backdrop-blur-xl bg-brand/80 border-b border-border-dim;
+}
+
+.hero-text {
+  @apply font-display text-[clamp(2.5rem,8vw,5.5rem)] leading-[1.1] font-extrabold tracking-tight bg-linear-to-b from-white to-text-dim bg-clip-text text-transparent;
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-linear-to-r from-accent via-white to-accent;
+}
+
+.bento-card {
+  @apply bg-glass backdrop-blur-md border border-border-dim rounded-2xl p-8 hover:border-accent/30 transition-all duration-500 overflow-hidden relative;
+}
+
+.grid-lines {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.glow-glow {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}

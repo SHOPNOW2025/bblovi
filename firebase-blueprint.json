@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Information about a registered user, including their role.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin", "company"] },
+        "companyId": { "type": "string", "description": "Linked company ID for company users" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Company": {
+      "title": "Company",
+      "description": "Represents a client company.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "A project assigned to a company.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "companyId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "progress": { "type": "number", "description": "Percentage of completion (0-100)" },
+        "status": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["companyId", "title", "progress"]
+    },
+    "SiteContent": {
+      "title": "Site Content",
+      "description": "Dynamic content for CMS.",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "description": "Unique identifier for the content piece (e.g., 'hero.title')" },
+        "value": { "type": "string" },
+        "type": { "type": "string", "enum": ["text", "image", "rich-text"] },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["key", "value", "type"]
+    },
+    "PricingPlan": {
+      "title": "Pricing Plan",
+      "description": "Subscription tiers for the pricing page.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "string" },
+        "billing": { "type": "string", "description": "e.g., /month, /year" },
+        "features": { "type": "array", "items": { "type": "string" } },
+        "isPopular": { "type": "boolean" },
+        "order": { "type": "number" }
+      },
+      "required": ["name", "price", "features", "order"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "User profiles indexed by UID"
+    },
+    "/companies/{companyId}": {
+      "schema": "Company",
+      "description": "Collection of companies"
+    },
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Collection of projects"
+    },
+    "/siteContent/{contentId}": {
+      "schema": "SiteContent",
+      "description": "Collection of CMS content items"
+    },
+    "/pricingPlans/{planId}": {
+      "schema": "PricingPlan",
+      "description": "Subscription tiers"
+    }
+  }
+}
