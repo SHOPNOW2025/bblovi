@@ -38,36 +38,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [editMode, setEditModeState] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  // Helper to check if current device is mobile
-  const isMobile = () => typeof window !== "undefined" && window.innerWidth < 768;
-
-  const setEditMode = (val: boolean) => {
-    // Prevent activating Edit Mode on mobile devices
-    if (val && isMobile()) {
-      console.warn("Edit Mode is disabled on mobile devices for better stability.");
-      return;
-    }
-    setEditModeState(val);
-  };
-
-  useEffect(() => {
-    // Reset edit mode on logout or window resize to mobile
-    const handleResize = () => {
-      if (isMobile() && editMode) {
-        setEditModeState(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [editMode]);
 
   useEffect(() => {
     // Reset edit mode on logout
-    if (!user) setEditModeState(false);
+    if (!user) setEditMode(false);
   }, [user]);
 
   useEffect(() => {

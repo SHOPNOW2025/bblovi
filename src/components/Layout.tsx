@@ -143,7 +143,17 @@ const Navbar = () => {
             )}
             {user && (
               <>
-                <Link to={profile?.role === "admin" ? "/admin" : "/portal"} onClick={() => setIsOpen(false)} className="bg-accent text-white w-full py-4 rounded-xl font-bold text-center">
+                {profile?.role === "admin" && (
+                  <button 
+                    onClick={() => setEditMode(!editMode)}
+                    className={`w-full py-4 rounded-xl font-black uppercase tracking-widest transition-all ${
+                      editMode ? "bg-accent text-white shadow-lg" : "bg-white/5 text-text-dim border border-white/10"
+                    }`}
+                  >
+                    {editMode ? "Edit Mode: ON" : "Edit Mode: OFF"}
+                  </button>
+                )}
+                <Link to={profile?.role === "admin" ? "/admin" : "/portal"} onClick={() => setIsOpen(false)} className="bg-white/5 border border-white/10 text-white w-full py-4 rounded-xl font-bold text-center">
                   {profile?.role === "admin" ? "Admin Hub" : "Client Portal"}
                 </Link>
                 <button onClick={() => { logout(); setIsOpen(false); }} className="text-red-500 font-bold py-2">
