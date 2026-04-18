@@ -216,19 +216,17 @@ const Footer = () => {
 
 export default function Layout() {
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-brand relative overflow-hidden">
-        {/* Background Atmosphere */}
-        <div className="fixed inset-0 grid-lines pointer-events-none z-0" />
-        <div className="fixed -top-[20%] -right-[10%] w-[60%] h-[60%] glow-glow pointer-events-none z-0 opacity-40 blur-[100px]" />
-        <div className="fixed -bottom-[20%] -left-[10%] w-[50%] h-[50%] glow-glow pointer-events-none z-0 opacity-20 blur-[100px]" />
-        
-        <Navbar />
-        <main className="relative z-10">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
-    </AuthProvider>
+    <div className="min-h-screen bg-brand relative overflow-hidden">
+      {/* Background Atmosphere */}
+      <div className="fixed inset-0 grid-lines pointer-events-none z-0" />
+      <div className="fixed -top-[20%] -right-[10%] w-[60%] h-[60%] glow-glow pointer-events-none z-0 opacity-40 blur-[100px]" />
+      <div className="fixed -bottom-[20%] -left-[10%] w-[50%] h-[50%] glow-glow pointer-events-none z-0 opacity-20 blur-[100px]" />
+      
+      <Navbar />
+      <main className="relative z-10">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
   );
 }
