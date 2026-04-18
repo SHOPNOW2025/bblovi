@@ -8,7 +8,8 @@ import {
   onAuthStateChanged, 
   User as FirebaseUser,
   signInWithPopup,
-  signOut
+  signOut,
+  signInWithEmailAndPassword
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db, googleProvider } from "../lib/firebase";
@@ -27,6 +28,8 @@ interface AuthContextType {
   editMode: boolean;
   setEditMode: (val: boolean) => void;
   loginWithGoogle: () => Promise<void>;
+  loginWithEmail: (email: string, pass: string) => Promise<void>;
+  signUpWithEmail: (email: string, pass: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -52,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const userRef = doc(db, "users", firebaseUser.uid);
           const userSnap = await getDoc(userRef);
           
-          const adminEmails = ["contact@bloovi.media", "tech@thebloom.media"];
+          const adminEmails = ["admin@bloovi.media", "contact@bloovi.media", "tech@thebloom.media"];
           const isAdminEmail = firebaseUser.email && adminEmails.includes(firebaseUser.email);
           
           if (userSnap.exists()) {
@@ -65,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               setProfile(data);
             }
           } else {
-            // Create new profile
+            // Create new profile record in Firestore
             const newProfile: UserProfile = {
               uid: firebaseUser.uid,
               email: firebaseUser.email || "",
@@ -91,12 +94,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await signInWithPopup(auth, googleProvider);
   };
 
+  const loginWithEmail = async (email: string, pass: string) => {
+    await signInWithEmailAndPassword(auth, email, pass);
+  };
+
+  const signUpWithEmail = async (email: string, pass: string) => {
+    const { createUserWithEmailAndPassword } = await import("firebase/auth");
+    await createUserWithEmailAndPassword(auth, email, pass);
+  };
+
   const logout = async () => {
     await signOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, editMode, setEditMode, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, profile, loading, editMode, setEditMode, loginWithGoogle, loginWithEmail, signUpWithEmail, logout }}>
       {children}
     </AuthContext.Provider>
   );
