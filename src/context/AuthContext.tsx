@@ -45,37 +45,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
-      if (firebaseUser) {
-        // Fetch or create profile
-        const userRef = doc(db, "users", firebaseUser.uid);
-        const userSnap = await getDoc(userRef);
-        
-        const isAdminEmail = firebaseUser.email === "contact@bloovi.media";
-        
-        if (userSnap.exists()) {
-          const data = userSnap.data() as UserProfile;
-          // Force admin role if email matches
-          if (isAdminEmail && data.role !== "admin") {
-            await setDoc(userRef, { role: "admin" }, { merge: true });
-            setProfile({ ...data, role: "admin" });
+      try {
+        setUser(firebaseUser);
+        if (firebaseUser) {
+          // Fetch or create profile
+          const userRef = doc(db, "users", firebaseUser.uid);
+          const userSnap = await getDoc(userRef);
+          
+          const adminEmails = ["contact@bloovi.media", "tech@thebloom.media"];
+          const isAdminEmail = firebaseUser.email && adminEmails.includes(firebaseUser.email);
+          
+          if (userSnap.exists()) {
+            const data = userSnap.data() as UserProfile;
+            // Force admin role if email matches
+            if (isAdminEmail && data.role !== "admin") {
+              await setDoc(userRef, { role: "admin" }, { merge: true });
+              setProfile({ ...data, role: "admin" });
+            } else {
+              setProfile(data);
+            }
           } else {
-            setProfile(data);
+            // Create new profile
+            const newProfile: UserProfile = {
+              uid: firebaseUser.uid,
+              email: firebaseUser.email || "",
+              role: isAdminEmail ? "admin" : "company",
+            };
+            await setDoc(userRef, newProfile);
+            setProfile(newProfile);
           }
         } else {
-          // Create new profile
-          const newProfile: UserProfile = {
-            uid: firebaseUser.uid,
-            email: firebaseUser.email || "",
-            role: isAdminEmail ? "admin" : "company",
-          };
-          await setDoc(userRef, newProfile);
-          setProfile(newProfile);
+          setProfile(null);
         }
-      } else {
-        setProfile(null);
+      } catch (error) {
+        console.error("Auth profile sync error:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return unsubscribe;
